@@ -18,9 +18,12 @@ export async function canAccessWorkspace(workspaceId: string){
     if (workspace.clerkOrgId === orgId) return true;
     // the session only knows the active org
     const clerk = await clerkClient();
-    const { data: memberships } = await clerk.users.getOrganizationMembershipList(
-        { userId, limit: 100 },
-    );
-    return memberships.some((m) => m.organization.id === workspace.clerkOrgId);   
+    const limit = 100;
+    for (let offset = 0; ; offset += limit) {
+        const { data: memberships, totalCount } =
+            await clerk.users.getOrganizationMembershipList({ userId, limit, offset });
+        if (memberships.some((m) => m.organization.id === workspace.clerkOrgId)) return true;
+        if (memberships.length < limit || offset + limit >= totalCount) return false;
+    }
 }
 

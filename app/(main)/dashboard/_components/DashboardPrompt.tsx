@@ -25,6 +25,7 @@ function nameForPrompt(prompt: string){
         ? firstLine
         : firstLine.slice(0, MAX_NAME_LENGTH).replace(/\s+\S*$/, "");
         const clean = name.replace(/[\s.,:;!?-]+$/, "");
+        if (!clean) return "Untitled workspace";
         return clean.charAt(0).toLocaleUpperCase() + clean.slice(1);
 }
 

@@ -93,6 +93,7 @@ export default function Home() {
                 muted
                 loop
                 playsInline
+                controls
                 poster={hero.video.poster}
                 width={1600}
                 height={900}
