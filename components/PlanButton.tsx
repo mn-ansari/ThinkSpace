@@ -12,7 +12,8 @@ const PlanButton =()=>{
     const openUpgrade = useUpgradeDialog();
 
     const paidPlan = subscription?.subscriptionItems.find(
-        (item) => item.status === "active" && !item.plan.isDefault,
+        (item) =>
+            (item.status === "active" || item.status === "past_due") && !item.plan.isDefault,
     )?.plan;
     const isPaid = Boolean(paidPlan);   
     

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState }  from "react"
+import React, { useRef, useState }  from "react"
 import {
   Dialog,
   DialogContent,
@@ -43,8 +43,17 @@ function WorkspaceForm({ onDone }: { onDone: () => void}){
 
     const openUpgrade = useUpgradeDialog();
         const {fn: createWorkspaceFn, loading } = useFetch(createWorkspace);
+    // Ref, not state: blocks a second Enter before `loading` re-renders.
+    const submitting = useRef(false);
     const handleSubmit = async () => {
-            const result = await createWorkspaceFn(name, description);
+        if (submitting.current || !name.trim()) return;
+        submitting.current = true;
+        let result;
+        try {
+            result = await createWorkspaceFn(name, description);
+        } finally {
+            submitting.current = false;
+        }
         if(!result) return;
         onDone();
         if("limit" in result) return openUpgrade(UPGRADE_REASONS[result.limit]);
@@ -60,7 +69,8 @@ function WorkspaceForm({ onDone }: { onDone: () => void}){
             placeholder="Q1 Marketing Launch"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSubmit()} 
+            onKeyDown={(e) => e.key === "Enter" && !e.nativeEvent.isComposing && handleSubmit()}
+            disabled={!!loading}
             autoFocus
             />
         </div>

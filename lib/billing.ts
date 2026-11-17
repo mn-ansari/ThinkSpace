@@ -1,6 +1,7 @@
 import { features } from "@/app/_data/landing";
 import { prisma } from "./prisma";
 import { clerkClient } from "@clerk/nextjs/server";
+import { isClerkAPIResponseError } from "@clerk/nextjs/errors";
 import { FREE_MONTHLY_PROMPTS } from "./plan-limits";
 import { isPageId } from "tldraw";
 
@@ -47,8 +48,10 @@ export async function getEntitlement(ownerId:string){
             );
             }
         }
-    }catch{
-        // no subscription (or Clerk unreachable): treat as the free plan
+    }catch (error){
+        // Confirmed no subscription: free plan. Anything else (network, 5xx, rate limit)
+        // propagates so callers fail retryably instead of showing an upgrade prompt.
+        if (!(isClerkAPIResponseError(error) && error.status === 404)) throw error;
     }
     
     const paid = PROMPT_FEATURES.find(({ feature })=> features.has(feature));
