@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import AppShell from "../components/AppShell"
 import { ClerkProvider } from "@clerk/nextjs"
 import { dark } from "@clerk/ui/themes";
+import { UPgradeDialogProvider } from "@/components/upgradeDialog";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <ClerkProvider
       appearance={{
         theme: dark,
-        variables: {colorPrimary: "oklch(1.74 0.16 55)" },
+        variables: {
+          // Matches --primary / --primary-foreground in globals.css (OKLCH lightness is 0–1).
+          colorPrimary: "oklch(0.74 0.16 55)",
+          colorPrimaryForeground: "oklch(0.15 0.02 55)",
+        },
       }}
     >
       <html
@@ -43,10 +48,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       >
       <body className="min-h-full flex flex-col">
       <TooltipProvider>
-
+        <UPgradeDialogProvider>
         <AppShell>{children}</AppShell>
-
+        </UPgradeDialogProvider>
         </TooltipProvider>
+
+
       <Toaster richColors />
       </body>
     </html>

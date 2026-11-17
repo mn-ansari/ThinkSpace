@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React, { Children } from "react";
+import React from "react";
 import SiteHeader from "../components/SiteHeader"
 
 const AppShell = ({children}: {children: React.ReactNode}) =>{
@@ -9,7 +9,7 @@ const AppShell = ({children}: {children: React.ReactNode}) =>{
     const isFullScreenRoute = pathname?.startsWith("/workspace/") || pathname?.startsWith("/shared/");
 
     if (isFullScreenRoute){
-        return <>{Children}</>;
+        return <>{children}</>;
     }
     return (
         <>
