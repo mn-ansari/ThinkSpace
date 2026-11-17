@@ -4,6 +4,7 @@ import { OrganizationSwitcher, Show, SignInButton, SignUpButton, useAuth, UserBu
 import { Button } from '@/components/ui/button'
 import { usePathname } from 'next/navigation';
 import { Organization } from '@clerk/nextjs/server';
+import PlanButton from './PlanButton';
 
 const SiteHeader = () => {
   const pathname = usePathname();
@@ -28,9 +29,9 @@ const SiteHeader = () => {
 
       {isLandingPage && (
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex" >
-            <Link href="#product"className="transition-colors hover:text-foreground">product</Link>
+            <Link href="#product"className="transition-colors hover:text-foreground">Product</Link>
             <Link href="#how-it-works" className="transition-colors hover:text-foreground">How it works</Link>
-            <Link href="#pricing" className="#transition-colors hover:text-foreground" >Pricing</Link>
+            <Link href="#pricing" className="transition-colors hover:text-foreground" >Pricing</Link>
         </nav>
       )}
       <div className="flex items-center gap-3" >
@@ -49,10 +50,12 @@ const SiteHeader = () => {
             afterCreateOrganizationUrl="/dashboard"
             afterSelectOrganizationUrl="/dashboard"
             />
-            {isLandingPage &&(
+            {isLandingPage ? (
                 <Button asChild size="sm">
                     <Link href="/dashboard">Dashboard</Link>
                 </Button>
+            ) : (
+              <PlanButton />
             )}
             <UserButton />
         </Show>
